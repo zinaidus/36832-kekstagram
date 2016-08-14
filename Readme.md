@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Zina Semenova](https://up.htmlacademy.ru/javascript/6/user/36832).
-* Наставник: `Неизвестно`.
+* Наставник: `Алексей Дмитриев`.
 
 ---
 
