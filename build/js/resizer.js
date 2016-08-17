@@ -98,18 +98,39 @@
       // Смещение первого штриха от начала линии.
       this._ctx.lineDashOffset = 7;
 
+      //Черный слой вокруг рамки
+      this._ctx.fillStyle = 'rgba(0,0,0,.8)';
+      this._ctx.fillRect(0, 0, this._container.width, this._container.height);
+    
+      //Вывод размеров кадрируемого изображения
+      this._ctx.strokeText = 1;
+      this._ctx.font = '20px Tahoma';
+      this._ctx.fillStyle = 'white';
+      this._ctx.textAlign = 'center';
+      this._ctx.textBaseline = 'bottom';
+      this._ctx.fillText(
+        this._image.naturalWidth+'x'+this._image.naturalHeight, 
+        this._container.width/2, 
+        (this._container.height/2-this._resizeConstraint.side/2)*0.9
+      );
+
       // Сохранение состояния канваса.
       this._ctx.save();
 
       // Установка начальной точки системы координат в центр холста.
       this._ctx.translate(this._container.width / 2, this._container.height / 2);
 
-      var displX = -(this._resizeConstraint.x + this._resizeConstraint.side / 2);
-      var displY = -(this._resizeConstraint.y + this._resizeConstraint.side / 2);
+      var displX = -(this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2;
+      var displY = -(this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2;
       // Отрисовка изображения на холсте. Параметры задают изображение, которое
       // нужно отрисовать и координаты его верхнего левого угла.
       // Координаты задаются от центра холста.
-      this._ctx.drawImage(this._image, displX, displY);
+      this._ctx.drawImage(
+        this._image, 
+        displX, displY, 
+        this._resizeConstraint.side, 
+        this._resizeConstraint.side
+      );
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
