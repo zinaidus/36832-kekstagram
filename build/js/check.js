@@ -12,7 +12,7 @@ function getMessage(a, b) {
     }
 
     if (typeof a === 'number') {
-        message = 'Переданное SVG-изображение содержит ' + a + 'объектов и ' + b * 4 + ' атрибутов';
+        message = 'Переданное SVG-изображение содержит ' + a + ' объектов и ' + b * 4 + ' атрибутов';
     }
 
     if (Array.isArray(a)) {
