@@ -130,9 +130,9 @@
 
             this._ctx.fillRect(-this._container.width / 2, -this._resizeConstraint.side / 2 - this._ctx.lineWidth,
                 this._container.width / 2 - this._resizeConstraint.side / 2 - this._ctx.lineWidth,
-                this._resizeConstraint.side + this._container.width / 2
+                this._resizeConstraint.side + this._ctx.lineWidth / 2
             );
-
+            
 
             //Отрисовка текста
             this._ctx.font = 'normal 20px Tahoma';
