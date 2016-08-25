@@ -143,11 +143,7 @@
 
             // Отрисовка прямоугольника, обозначающего область изображения после
             // кадрирования. Координаты задаются от центра.
-            this._ctx.strokeRect(
-                (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-                (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-                this._resizeConstraint.side - this._ctx.lineWidth / 2,
-                this._resizeConstraint.side - this._ctx.lineWidth / 2);
+            setLineDotted(this._ctx, this._resizeConstraint, this._ctx.lineWidth / 2, 6);
 
             // Восстановление состояния канваса, которое было до вызова ctx.save
             // и последующего изменения системы координат. Нужно для того, чтобы
@@ -341,6 +337,70 @@
         this.x = x;
         this.y = y;
     };
+    
+    function isEdge(x, y, side, offset, center) {
+        if (typeof center !== 'object') center = {};
+        if (!center.x) center.x = 0;
+        if (!center.y) center.y = 0;
+
+        if (x === center.x - side / 2 - offset || x === center.x + side / 2 + offset) {
+            if (y >= center.y - side / 2 - offset && y <= center.y + side / 2 + offset) {
+                return true;
+            }
+        }
+
+        if (y === center.y - side / 2 - offset || y === center.y + side / 2 + offset) {
+            if (x >= center.x - side / 2 - offset && x <= center.x + side / 2 + offset) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Отрисовка линии с точками по периметру
+    function setLineDotted(ctx, square, radius, spacing) {
+        //проверка достижения конца рамки  
+
+
+        var side = square.side;
+        var offset = radius;
+        var center = {
+            x: 0,
+            y: 0
+        };
+
+        var n = Math.floor((side + spacing) / (2 * radius + spacing));
+
+        //начало отрисовки отрезка с верхней левой координаты
+        for (var i = 0; i < n; i++) { // цикл прогоняет точки по линии y
+            var y = -(side / 2) - offset + i * (2 * radius + spacing);
+            for (var j = 0; j < n; j++) { // цикл прогоняет точки по линии x
+                var x = -(side / 2) - offset + j * (2 * radius + spacing);
+                if (isEdge(x, y, side, offset, center)) {
+                    drawCircle(ctx, radius, x, y);
+                }
+            }
+        }
+
+        // начало отрисовки отрезка с нижней правой координаты
+        for (var i = 0; i < n; i++) { // цикл прогоняет точки по линии y
+            var y = (side / 2) - 2 * offset - i * (2 * radius + spacing);
+            for (var j = 0; j < n; j++) { // цикл прогоняет точки по линии x
+                var x = (side / 2) - 2 * offset - j * (2 * radius + spacing);
+                if (isEdge(x, y, side, -2 * offset, center)) {
+                    drawCircle(ctx, radius, x, y);
+                }
+            }
+        }
+    }
+
+    //отрисовка круга
+    function drawCircle(ctx, radius, x, y) {
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = "#ffe753";
+        ctx.fill();
+    }
 
     window.Resizer = Resizer;
 })();
