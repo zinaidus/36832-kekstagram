@@ -1,2 +1,2 @@
 require('./resizer');
-require('./upload.js');
+require('./upload');
