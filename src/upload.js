@@ -105,15 +105,15 @@
       submit.disabled = !resizeFormIsValid();
   };
 
-  //функция, срабатывающвя при валидных данных
+  //функция, срабатывающая при валидных данных
 
   function resizeFormIsValid() {
       var leftValue = +left.value;
-      var topValue = +top.value
+      var topValue = +top.value;
       var sideValue = +side.value;
-      var widthCrop = leftValue + sideValue;
-      var heightCrop = topValue + sideValue;
-
+      var widthCrop = Math.abs(leftValue) + Math.abs(sideValue);
+      var heightCrop = Math.abs(topValue) + Math.abs(sideValue);
+      
       return (widthCrop < currentResizer._image.naturalWidth && heightCrop < currentResizer._image.naturalHeight);
   }
  
