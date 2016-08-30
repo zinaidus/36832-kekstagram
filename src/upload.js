@@ -108,17 +108,18 @@
   //функция, срабатывающая при валидных данных
 
   function resizeFormIsValid() {
-      var leftValue = parseFloat(left.value || 0);
-      var topValue = parseFloat(top.value || 0);
-      var sideValue = parseFloat(side.value || 0);
-      var submit = document.getElementById('filter-fwd');
-      if (leftValue < 0 ) submit.disabled = true;
-      if (topValue < 0 ) submit.disabled = true;
-      if (sideValue < 0 ) submit.disabled = true;
+      var leftValue = parseFloat(left.value) || 0;
+      var topValue = parseFloat(top.value)  || 0;
+      var sideValue = parseFloat(side.value) || 0;
       var widthCrop = leftValue + sideValue;
       var heightCrop = topValue + sideValue;
+      var leftValueIsPositive = leftValue > 0;
+      var topValueIsPositive = topValue > 0;
+      var widthIsValid = widthCrop < currentResizer._image.naturalWidth;
+      var heightIsValid = heightCrop < currentResizer._image.naturalHeight;
       
-      return (widthCrop < currentResizer._image.naturalWidth && heightCrop < currentResizer._image.naturalHeight);
+      return (widthIsValid && heightIsValid
+              && leftValueIsPositive && topValueIsPositive);
   }
  
   /**
