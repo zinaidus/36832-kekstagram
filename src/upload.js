@@ -8,6 +8,7 @@
 'use strict';
 
 (function() {
+  var browserCookies = require('browser-cookies');
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -240,9 +241,28 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
+      saveFilterToCookies();
     }
   };
+  
+  function saveFilterToCookies() {
+      var element = document.querySelector('#upload-filter input[type=radio]:checked');
+      browserCookies.set('upload-filter', element.value, { expires: getDaysToExpireCookies() });
+  }
 
+  function getDaysToExpireCookies() {
+      var birthday = new Date(1906, 11, 9); //Grace's birthday 9 Dec 1906
+      var curDate = new Date();
+      var thisYearBirthday = new Date(curDate.getFullYear(), birthday.getMonth(), birthday.getDate());
+      var msToDays = 1000 * 60 * 60 * 24;
+      var deltaT = Math.ceil((curDate - thisYearBirthday) / msToDays); //разница во времени между Grace Hopper ДР и curDate
+      if (deltaT < 0) {
+          var lastYearBirthday = new Date(curDate.getFullYear() - 1, birthday.getMonth(), birthday.getDate());
+          deltaT = Math.ceil((curDate - lastYearBirthday) / msToDays);
+      }
+
+      return deltaT;
+  }
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
