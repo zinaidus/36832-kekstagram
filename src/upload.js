@@ -87,6 +87,41 @@
    */
   var resizeForm = document.forms['upload-resize'];
 
+  var left = resizeForm['resize-x'];
+  var top = resizeForm['resize-y'];
+  var side = resizeForm['resize-size'];
+
+  //функции, срабатывающие при невалидных данных
+  left.onchange = function() {
+      var submit = document.getElementById('filter-fwd');
+      submit.disabled = !resizeFormIsValid();
+  };
+  top.onchange = function() {
+      var submit = document.getElementById('filter-fwd');
+      submit.disabled = !resizeFormIsValid();
+  };
+  side.onchange = function() {
+      var submit = document.getElementById('filter-fwd');
+      submit.disabled = !resizeFormIsValid();
+  };
+
+  //функция, срабатывающая при валидных данных
+
+  function resizeFormIsValid() {
+      var leftValue = parseFloat(left.value) || 0;
+      var topValue = parseFloat(top.value)  || 0;
+      var sideValue = parseFloat(side.value) || 0;
+      var widthCrop = leftValue + sideValue;
+      var heightCrop = topValue + sideValue;
+      var leftValueIsPositive = leftValue > 0;
+      var topValueIsPositive = topValue > 0;
+      var widthIsValid = widthCrop < currentResizer._image.naturalWidth;
+      var heightIsValid = heightCrop < currentResizer._image.naturalHeight;
+      
+      return (widthIsValid && heightIsValid
+              && leftValueIsPositive && topValueIsPositive);
+  }
+ 
   /**
    * Форма добавления фильтра.
    * @type {HTMLFormElement}
