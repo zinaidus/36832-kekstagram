@@ -246,8 +246,19 @@
   };
   
   function saveFilterToCookies() {
-      var element = document.querySelector('#upload-filter input[type=radio]:checked');
-      browserCookies.set('upload-filter', element.value, { expires: getDaysToExpireCookies() });
+      //выбираем фильтр по умолчанию
+      var chosenFilter = document.getElementsByClassName('filter-image-preview')[0].className;
+      if (chosenFilter.includes('filter-none')) {
+      var filterValue = 'filter-none';
+      }
+      if (chosenFilter.includes('filter-chrome')) {
+        filterValue = 'filter-chrome';
+      }
+      if (chosenFilter.includes('filter-sepia')) {
+        filterValue = 'filter-sepia';
+      }
+      filterValue = document.querySelector('#upload-filter input[type=radio]:checked');
+      browserCookies.set('upload-filter', filterValue.value, { expires: getDaysToExpireCookies() });
   }
 
   function getDaysToExpireCookies() {
@@ -263,6 +274,8 @@
 
       return deltaT;
   }
+
+
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
