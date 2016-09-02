@@ -8,6 +8,7 @@
 'use strict';
 
 (function() {
+  var browserCookies = require('browser-cookies');
   /** @enum {string} */
   var FileType = {
     'GIF': '',
@@ -71,9 +72,7 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
-  function resizeFormIsValid() {
-    return true;
-  }
+ 
 
   /**
    * Форма загрузки изображения.
@@ -113,8 +112,8 @@
       var sideValue = parseFloat(side.value) || 0;
       var widthCrop = leftValue + sideValue;
       var heightCrop = topValue + sideValue;
-      var leftValueIsPositive = leftValue > 0;
-      var topValueIsPositive = topValue > 0;
+      var leftValueIsPositive = leftValue >= 0;
+      var topValueIsPositive = topValue >= 0;
       var widthIsValid = widthCrop < currentResizer._image.naturalWidth;
       var heightIsValid = heightCrop < currentResizer._image.naturalHeight;
       
@@ -240,8 +239,34 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
+      
     }
   };
+  
+  function saveFilterToCookies() {
+      var element = document.querySelector('#upload-filter input[name="upload-filter"]:checked');
+      browserCookies.set('upload-filter', element.value, { expires: getDaysToExpireCookies() });
+  }
+
+  var lastChosenFilter = browserCookies.get('upload-filter');
+  var filterToSave = '#upload-filter input[name="upload-filter"][value="' + lastChosenFilter + '"]';
+  var lastChosenFilterEl = document.querySelector(filterToSave);
+  lastChosenFilterEl.click(); 
+
+  function getDaysToExpireCookies() {
+      var birthday = new Date(1906, 11, 9); //Grace's birthday 9 Dec 1906
+      var curDate = new Date();
+      var thisYearBirthday = new Date(curDate.getFullYear(), birthday.getMonth(), birthday.getDate());
+      var msToDays = 1000 * 60 * 60 * 24;
+      var deltaT = Math.ceil((curDate - thisYearBirthday) / msToDays); //разница во времени между Grace Hopper ДР и curDate
+      if (deltaT < 0) {
+          var lastYearBirthday = new Date(curDate.getFullYear() - 1, birthday.getMonth(), birthday.getDate());
+          deltaT = Math.ceil((curDate - lastYearBirthday) / msToDays);
+      }
+
+      return deltaT;
+  }
+
 
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
@@ -252,6 +277,7 @@
 
     filterForm.classList.add('invisible');
     resizeForm.classList.remove('invisible');
+
   };
 
   /**
@@ -267,6 +293,7 @@
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
+    saveFilterToCookies();
   };
 
   /**
