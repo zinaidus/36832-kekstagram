@@ -72,9 +72,7 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
-  function resizeFormIsValid() {
-    return true;
-  }
+ 
 
   /**
    * Форма загрузки изображения.
@@ -114,8 +112,8 @@
       var sideValue = parseFloat(side.value) || 0;
       var widthCrop = leftValue + sideValue;
       var heightCrop = topValue + sideValue;
-      var leftValueIsPositive = leftValue > 0;
-      var topValueIsPositive = topValue > 0;
+      var leftValueIsPositive = leftValue >= 0;
+      var topValueIsPositive = topValue >= 0;
       var widthIsValid = widthCrop < currentResizer._image.naturalWidth;
       var heightIsValid = heightCrop < currentResizer._image.naturalHeight;
       
@@ -241,25 +239,19 @@
 
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
-      saveFilterToCookies();
+      
     }
   };
   
   function saveFilterToCookies() {
-      //выбираем фильтр по умолчанию
-      var chosenFilter = document.getElementsByClassName('filter-image-preview')[0].className;
-      if (chosenFilter.includes('filter-none')) {
-      var filterValue = 'filter-none';
-      }
-      if (chosenFilter.includes('filter-chrome')) {
-        filterValue = 'filter-chrome';
-      }
-      if (chosenFilter.includes('filter-sepia')) {
-        filterValue = 'filter-sepia';
-      }
-      filterValue = document.querySelector('#upload-filter input[type=radio]:checked');
-      browserCookies.set('upload-filter', filterValue.value, { expires: getDaysToExpireCookies() });
+      var element = document.querySelector('#upload-filter input[name="upload-filter"]:checked');
+      browserCookies.set('upload-filter', element.value, { expires: getDaysToExpireCookies() });
   }
+
+  var lastChosenFilter = browserCookies.get('upload-filter');
+  var filterToSave = '#upload-filter input[name="upload-filter"][value="' + lastChosenFilter + '"]';
+  var lastChosenFilterEl = document.querySelector(filterToSave);
+  lastChosenFilterEl.click(); 
 
   function getDaysToExpireCookies() {
       var birthday = new Date(1906, 11, 9); //Grace's birthday 9 Dec 1906
@@ -285,6 +277,7 @@
 
     filterForm.classList.add('invisible');
     resizeForm.classList.remove('invisible');
+
   };
 
   /**
@@ -300,6 +293,7 @@
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
+    saveFilterToCookies();
   };
 
   /**
